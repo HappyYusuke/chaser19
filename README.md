@@ -37,6 +37,6 @@ Thiss program finds human by using the Hokuyo UTM-30LX lidar.
 #Change log:  
 2018-08-10: Fixed CMakeLists.txt for OpenCV 3.0.  
 
-#ToDo:  
+##ToDo:  
 1.衝突回避機能を実装する  
 2. 追跡範囲外に出ると止まる問題。追跡範囲を広げるなど。　
