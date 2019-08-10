@@ -4,7 +4,7 @@
 **********************************************
 
 
-**概要**
+**概要**  
 Thiss program finds human by using the Hokuyo UTM-30LX lidar.
 
 1. Environment  
@@ -34,7 +34,7 @@ Thiss program finds human by using the Hokuyo UTM-30LX lidar.
       type: std_msg/String  
       value: "start", "stop", "none"
 
-**Change **  
+**Change Log**  
 2018-08-10: Fixed CMakeLists.txt for OpenCV 3.0.  
 
 **ToDo**    
