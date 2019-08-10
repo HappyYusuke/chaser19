@@ -6,9 +6,9 @@
 Change log: 
 2018-08-10: Fixed CMakeLists.txt for OpenCV 3.0.
 
-ToDo:
-衝突回避機能を実装する
-追跡範囲外に出ると止まる問題。追跡範囲を広げるなど。
+ToDo:　
+衝突回避機能を実装する　
+追跡範囲外に出ると止まる問題。追跡範囲を広げるなど。　
 
 
 Thiss program finds human by using the Hokuyo UTM-30LX lidar.
