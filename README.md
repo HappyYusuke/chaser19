@@ -1,16 +1,10 @@
 **********************************************
-*** KES version                            ***
+*** KES & OpenCV3 対応バージョン            ***
 *** A follow human program by Kosei Demura *** 
 **********************************************
 
-Change log: 
-2018-08-10: Fixed CMakeLists.txt for OpenCV 3.0.
 
-ToDo:　
-衝突回避機能を実装する　
-追跡範囲外に出ると止まる問題。追跡範囲を広げるなど。　
-
-
+#概要
 Thiss program finds human by using the Hokuyo UTM-30LX lidar.
 
 1. Environment  
@@ -39,3 +33,10 @@ Thiss program finds human by using the Hokuyo UTM-30LX lidar.
       name: follow_human  
       type: std_msg/String  
       value: "start", "stop", "none"
+
+#Change log:  
+2018-08-10: Fixed CMakeLists.txt for OpenCV 3.0.  
+
+#ToDo:  
+1.衝突回避機能を実装する  
+2. 追跡範囲外に出ると止まる問題。追跡範囲を広げるなど。　
