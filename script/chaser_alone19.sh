@@ -9,5 +9,5 @@ sleep 5s
 #sleep 5s
 xterm -geometry 80x5+0+369 -e "~/catkin_ws/devel/lib/chaser19/chaser19" &
 sleep 5s
-xterm -geometry 80x5+0+910 -e "/opt/ros/kinetic/bin/rostopic pub std_msgs/String start" &
+xterm -geometry 80x5+0+910 -e "/opt/ros/kinetic/bin/rostopic pub /follow_human std_msgs/String start" &
 
