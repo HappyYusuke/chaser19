@@ -31,7 +31,7 @@ $ rostopic pub /follow_human std_msgs/String start
 
    (3) Stand-alone  
    $ roscd chaser19  
-   $ cd script  
+   $ cd scripts  
    $ ./chaser_alone19.sh  
 
 4. Topic   
@@ -39,7 +39,7 @@ $ rostopic pub /follow_human std_msgs/String start
       name: /find_human   
       type: bool  
       value: "true", "false"  
-       
+         
   (2) Subscribe   
       name: /follow_human  
       type: std_msgs/String  
