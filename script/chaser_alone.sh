@@ -7,7 +7,7 @@ xterm -geometry 80x5+0+260 -e "/opt/ros/kinetic/bin/rqt -s kobuki_dashboard" &
 sleep 5s
 #xterm -geometry 80x5+0+360 -e "/opt/ros/kinectic/bin/rosbag record -a" &
 #sleep 5s
-xterm -geometry 80x5+0+369 -e "~/catkin_ws/devel/lib/chaser/chaser" &
+xterm -geometry 80x5+0+369 -e "~/catkin_ws/devel/lib/chaser19/chaser19" &
 sleep 5s
 xterm -geometry 80x5+0+910 -e "/opt/ros/kinetic/bin/rostopic pub std_msgs/String start" &
 
