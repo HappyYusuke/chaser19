@@ -26,7 +26,7 @@ Thiss program finds human by using the Hokuyo UTM-30LX lidar.
 4. Topic   
   (1) Publish   
       name: /find_human   
-      type: bool
+      type: bool  
       value: "true", "false"  
        
   (2) Subscribe   

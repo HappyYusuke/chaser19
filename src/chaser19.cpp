@@ -1335,7 +1335,7 @@ void Robot::init()
     cmd_vel_pub      = nh.advertise<geometry_msgs::Twist>("/cmd_vel_mux/input/teleop", 100);
     follow_human_sub = nh.subscribe("/follow_human", 100, &Robot::followHumanCallback,this);
     lost_human_pub   = nh.advertise<std_msgs::String>("/helpmecarry/follow/input", 100); //yamada
-    find_human_pub   = nh.advertise<std_msgs::String>("find_human", 100);
+    find_human_pub   = nh.advertise<std_msgs::String>("/find_human", 100);
 }
 
 /**
