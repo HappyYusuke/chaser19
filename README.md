@@ -21,20 +21,21 @@ Thiss program finds human by using the Hokuyo UTM-30LX lidar.
    (2) Stand-alone  
    $ roscd chaser  
    $ cd script  
-   $ ./chaser.sh  
+   $ ./chaser_alone.sh  
 
 4. Topic   
   (1) Publish   
-      name: find_human   
-      type: std_msg/String   
+      name: /find_human   
+      type: bool
       value: "true", "false"  
        
   (2) Subscribe   
-      name: follow_human  
-      type: std_msg/String  
+      name: /follow_human  
+      type: std_msgs/String  
       value: "start", "stop", "none"
 
 **Change Log**  
+2018-08-13: chaser19.cppを@Home競技に対応させた。/follow_humanトピックによりstart、stopできる。
 2018-08-10: Fixed CMakeLists.txt for OpenCV 3.0.  
 
 **ToDo**    
