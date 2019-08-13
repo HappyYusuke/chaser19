@@ -6,6 +6,11 @@
 
 **概要**  
 Thiss program finds human by using the Hokuyo UTM-30LX lidar.
+chaser19は今までのchaserと違い、RoboCup競技用に/follow_humanトピックで"start"を受け取らないと動かない。
+"stop"を受け取ると停止する。これは次のコマンドで実行できる。  
+$ rostopic pub /follow_human std_msgs/String start
+
+
 
 1. Environment  
    Ubuntu14.04 and ROS Iindigo
@@ -18,10 +23,16 @@ Thiss program finds human by using the Hokuyo UTM-30LX lidar.
    (1) Launch with other nodes  
    $ rosrun follow_human follow_human  
 
-   (2) Stand-alone  
-   $ roscd chaser  
+   (2) Kobuki, Lidar, Chaser19を起動するスクリプト
+   $ roscd chaser19
+   $ cd scripts
+   $ ./chaser19.sh  
+
+
+   (3) Stand-alone  
+   $ roscd chaser19  
    $ cd script  
-   $ ./chaser_alone.sh  
+   $ ./chaser_alone19.sh  
 
 4. Topic   
   (1) Publish   
