@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(chaser)
+project(chaser19)
 #Debug option
 set(CMAKE_BUILD_TYPE Debug)
 #For profilling with gprof
@@ -16,7 +16,7 @@ include_directories(/usr/local/include ${catkin_INCLUDE_DIRS} ${OpenCV_INCLUDE_D
 
 catkin_package(
   INCLUDE_DIRS
-  LIBRARIES chaser
+  LIBRARIES chaser19
   CATKIN_DEPENDS roscpp geometry_msgs
   DEPENDS urg_node sensor_msgs roscpp
 )
@@ -25,8 +25,8 @@ catkin_package(
 ## Build ##
 ###########
 
-add_executable(chaser src/chaser.cpp)
-target_link_libraries(chaser ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} )
+add_executable(chaser19 src/chaser19.cpp)
+target_link_libraries(chaser19 ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} )
 
 #############
 ## Install ##
@@ -39,7 +39,7 @@ target_link_libraries(chaser ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} )
 #)
 
 ## Mark executables and/or libraries for installation
-install(TARGETS chaser
+install(TARGETS chaser19
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
