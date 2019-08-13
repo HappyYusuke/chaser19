@@ -8,7 +8,7 @@
          Probably is a bug in the nodelet manager: https://github.com/ros/nodelet_core/issues/7 --> 
     <arg name="scan_topic" value="/scan" />
   </include>
- <node pkg="dfollow" name="dfollow" type="dfollow" output="screen">
+ <node pkg="chaser19" name="chaser19" type="chaser19" output="screen">
  </node>
 
 
