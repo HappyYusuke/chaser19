@@ -777,20 +777,27 @@ void Robot::calcHumanPoseVer2(int object_num,  Object *object, Object *human_obj
         human_obj->image_expect_human_x_ = (tmp_ave_x + image_diff_human_x);
         human_obj->image_expect_human_y_ = (tmp_ave_y + image_diff_human_y);
 
-        // 半径,yamada,ver2
+	// 山田君のコードは追跡範囲を円としているが、横方向の移動に弱いので矩形にする
+	// 半径,yamada,ver2
         double tmp_radius = sqrt(pow(tmp_ave_x - human_obj->image_expect_human_x_, 2) +
                                  pow(tmp_ave_y - human_obj->image_expect_human_y_, 2));
-
         // 脚候補の中心が検出範囲の中にあるか(円),yamada,ver2
-        bool human_pos_judge = tmp_radius < g_find_leg_radius;
+        //bool human_pos_judge = tmp_radius < g_find_leg_radius; 
 
+	// 脚候補の中心が検出範囲の中にあるか(矩形),demu
+	bool human_pos_judge = ((fabs(tmp_ave_x - human_obj->image_expect_human_x_) < g_find_leg_radius)
+				&& (fabs(tmp_ave_y - human_obj->image_expect_human_y_) < g_find_leg_radius));	
         // 片足間の重心の距離[m]
         double d = sqrt(pow(leg1_point.x - leg2_point.x, 2) + pow(leg1_point.y - leg2_point.y, 2)) /kMToPixel;
 
         // 脚の中心位置からの円を描写,yamada,ver2
-        cv::circle(lidar_image, cv::Point(human_obj->image_expect_human_x_, human_obj->image_expect_human_y_), g_find_leg_radius,
-                   cv::Scalar(0,255,0),2);
-
+        //cv::circle(lidar_image, cv::Point(human_obj->image_expect_human_x_, human_obj->image_expect_human_y_), g_find_leg_radius,
+        //           cv::Scalar(0,255,0),2);
+	cv::rectangle(lidar_image, cv::Point(human_obj->image_expect_human_x_ - g_find_leg_radius,
+					     human_obj->image_expect_human_y_ -  g_find_leg_radius),
+			      cv::Point(human_obj->image_expect_human_x_ + g_find_leg_radius,
+				human_obj->image_expect_human_y_ + g_find_leg_radius),cv::Scalar(0,255,0),2); // demu
+	
         // 脚と判断したときの処理
         if (d < kLegBetweenDistance && human_pos_judge) {
 	  
@@ -1242,14 +1249,15 @@ void Robot::followHuman(cv::Mat input_image, bool movable = true)
 
     if (collision == DANGER) {
         // old code
-        move(0, 0);
+        //move(0, 0);
         // ここは停止でなく衝突回避のコードを実装する  demu 2019-08-13
         // 衝突する可能性が高いので後進して、障害物のない方向回転にする
-        // new code demu
-	//double turn_speed = 2.0;
-	//if (DEG2RAD(avoid_angle) > 0) move(0, - turn_speed);
-	//else                          move(0,   turn_speed);
-	//ros::Duration(0.3).sleep();
+
+        // new code for collision avoidance demu
+	double turn_speed = 0.2;
+	if (DEG2RAD(avoid_angle) > 0) move(0, getAngularSpeed() - turn_speed);
+	else                          move(0, getAngularSpeed() +  turn_speed);
+	ros::Duration(0.02).sleep();
 	
         printf("DANGER\n");
     }
