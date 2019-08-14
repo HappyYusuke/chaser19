@@ -55,6 +55,7 @@
 #include <nav_msgs/Odometry.h>
 #include <stdio.h>
 #include <std_msgs/String.h>
+#include <std_msgs/Bool.h>
 #include <sys/time.h>
 #include <string>
 #include <sstream>
@@ -258,7 +259,7 @@ public:
 
     void   changeToPicture(int dataCount, double laser_angle_min,                  // LIDARからの情報を画像に変換,ver2
                            double laser_angle_max, double laser_angle_increment);
-    int    checkCollision();                                                       // 障害物チェック
+    int    checkCollision(double *avoid_angle);                                                       // 障害物チェック
     int    checkCondition(double theta);                                           // 進行できるかできないか
     string follow_command; // follow command
     int    findLegs(cv::Mat input_image, Object *object,                           // 脚候補の探索,ver2

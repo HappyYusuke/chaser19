@@ -32,12 +32,12 @@ $ rostopic pub /follow_human std_msgs/String start
    (3) Stand-alone  
    $ roscd chaser19  
    $ cd scripts  
-   $ ./chaser_alone19.sh  
+   $ ./alone_chaser19.sh  
 
 4. Topic   
   (1) Publish   
       name: /find_human   
-      type: bool  
+      type: std_msgs/Bool  
       value: "true", "false"  
          
   (2) Subscribe   

@@ -1,7 +1,7 @@
 /**
 *@file   chaser.cpp
 *@brief  人追従プログラム cppファイル
-*@author　Kosei Demura , Ryoya Yamada
+*@author　Kosei Demua , Ryoya Yamada
 *@date    2017_12_28
 */
 
@@ -47,8 +47,7 @@ Robot::Robot()
     // yamada
     displace_x_ = 0; // 画像のサイズを超えて書き込もうとした際、その座標を中心からの座標にするための値,ver2
     displace_y_ = 0; //
-    last_image_count_ = 0; // ver2
-    follow_command = "false"; 
+    last_image_count_ = 0; // ver2    follow_command = "false"; 
 }
 
 /**
@@ -794,7 +793,7 @@ void Robot::calcHumanPoseVer2(int object_num,  Object *object, Object *human_obj
 
         // 脚と判断したときの処理
         if (d < kLegBetweenDistance && human_pos_judge) {
-
+	  
             // 画像中心から脚までの距離[m]
             human_obj->distance_ = (sqrt(leg1_distance) + sqrt(leg2_distance))/(kMToPixel * 2);
             // 画像中心から脚の位置の角度[rad/s]
@@ -826,7 +825,11 @@ void Robot::calcHumanPoseVer2(int object_num,  Object *object, Object *human_obj
             return;
 
         } else {
-            human_obj->distance_ = 999;
+	    std_msgs::Bool find_bool;
+	    find_bool.data = false;
+	    find_human_pub.publish(find_bool);
+	  
+	    human_obj->distance_ = 999;
             human_obj->angle_  = 999;
             human_obj->local.x = 999;
             human_obj->local.y = 999;
@@ -966,6 +969,9 @@ void Robot::calcHumanPoseVer1(int object_num,  Object *object, Object *human_obj
                 human_obj->image_pos_.y = human_obj->image_expect_human_y_;
             }
 
+	    std_msgs::Bool find_bool;
+	    find_bool.data = true;
+	    find_human_pub.publish(find_bool);
             return;
         } else {
             human_obj->distance_ = 999;
@@ -977,6 +983,10 @@ void Robot::calcHumanPoseVer1(int object_num,  Object *object, Object *human_obj
             human_obj->setTheta(999);
             human_obj->image_pos_.x = 999;
             human_obj->image_pos_.y = 999;
+
+	    std_msgs::Bool find_bool;
+	    find_bool.data = false;
+	    find_human_pub.publish(find_bool);
         }
         return;
     }
@@ -1061,24 +1071,27 @@ int Robot::checkCondition(double theta)
 
 /**
 *@brief  衝突を検出する関数
+*@param   double *avoid_angle 障害物のいる方位 [deg]
 *@return  int SAFE    安全
 *@return  int DANGER  障害物あり衝突の危険大
 *@details 左右に５度ずつの角度をcheckConditionに渡し、障害物がないかチェックしてする。
 */
-int Robot::checkCollision()
+
+int Robot::checkCollision(double *avoid_angle)
 {
     for (int i = 0; i < 90; i+= 5) {
         for (int j = -1; j < 1; j+=1) {
             int condition;
             double angle = i * j;
-            double avoid_angle = 0;
+            *avoid_angle = 0;
             condition = checkCondition(DEG2RAD(angle));
             if (condition == SAFE) {
                 //LIDARのスキャン方向は反時計回りなのでマイナスをかける
-                avoid_angle = -angle; // この値を使えば障害物回避が可能
+                *avoid_angle = -angle; // この値を使えば障害物回避が可能
                 return SAFE;
             } else if (condition == DANGER) {
-                return DANGER;
+	      *avoid_angle = -angle; // demu
+	      return DANGER;
             }
         }
     }
@@ -1131,9 +1144,13 @@ void Robot::followHuman(cv::Mat input_image, bool movable = true)
 
     cv::waitKey(1); // 画像表示のために1ms待つ
 
-    // 見つけた人の位置に丸を描写
+    // 見つけた人の位置に丸を描写 write circle
     cv::circle(lidar_image,cv::Point(human.image_pos_.x, human.image_pos_.y),5,green,2);
+    std_msgs::Bool find_bool;
+    find_bool.data = true;
+    find_human_pub.publish(find_bool);
 
+    
     static int lost_count = 0;    // 人を見失った回数
     const int lost_count_max = 1; // この回数だけ連続して失敗すると検出範囲を拡大
 
@@ -1189,10 +1206,9 @@ void Robot::followHuman(cv::Mat input_image, bool movable = true)
                 defaultPos(&human);
                 human.distance_ = 999;
                 human.angle_    = 999;
-
-		std_msgs::String human_lost_msg;
-		human_lost_msg.data = "lost";
-		lost_human_pub.publish(human_lost_msg);
+		std_msgs::Bool find_bool;
+		//find_bool.data = false;
+		//find_human_pub.publish(find_bool);
 		printf("I lost the human");
 	    }
         }
@@ -1221,13 +1237,32 @@ void Robot::followHuman(cv::Mat input_image, bool movable = true)
         setAngularSpeed(-kTurnMaxSpeed);
 
     // 衝突検出
-    int collision = checkCollision();
+    double avoid_angle;
+    int collision = checkCollision(&avoid_angle);
 
-    if (collision == DANGER) { // 衝突する可能性が高いので停止
-        move(0,0);
+    if (collision == DANGER) {
+        // old code
+        move(0, 0);
+        // ここは停止でなく衝突回避のコードを実装する  demu 2019-08-13
+        // 衝突する可能性が高いので後進して、障害物のない方向回転にする
+        // new code demu
+	//double turn_speed = 2.0;
+	//if (DEG2RAD(avoid_angle) > 0) move(0, - turn_speed);
+	//else                          move(0,   turn_speed);
+	//ros::Duration(0.3).sleep();
+	
         printf("DANGER\n");
-    } else { // 衝突する可能性は低いので進む
-        move(getLinearSpeed(),getAngularSpeed());
+    }
+    else { // 衝突する可能性は低いので、障害物と反対方向へ少し向きを変更
+	// old code
+        move(getLinearSpeed(),getAngularSpeed());  // old code
+
+	// new code
+	//double change_speed = 1.0;  // rad/s
+	//if (DEG2RAD(avoid_angle) > 0) change_speed = -1.0;
+	//else                          change_speed =  1.0;
+	//move(getLinearSpeed(),getAngularSpeed() );  // demu
+	////move(getLinearSpeed(), DEG2RAD(collision * kp)); // demu 2019-08-13 
         printf("SAFE\n");
     }
     human.last_distance_ = human.distance_;
@@ -1334,8 +1369,7 @@ void Robot::init()
     odom_sub         = nh.subscribe("/odom", 100, &Robot::odomCallback, this);
     cmd_vel_pub      = nh.advertise<geometry_msgs::Twist>("/cmd_vel_mux/input/teleop", 100);
     follow_human_sub = nh.subscribe("/follow_human", 100, &Robot::followHumanCallback,this);
-    lost_human_pub   = nh.advertise<std_msgs::String>("/helpmecarry/follow/input", 100); //yamada
-    find_human_pub   = nh.advertise<std_msgs::String>("/find_human", 100);
+    find_human_pub   = nh.advertise<std_msgs::Bool>("/find_human", 100); // true: find, false: lost
 }
 
 /**
